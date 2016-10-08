@@ -1,0 +1,16 @@
+IDEAS AND TODOs:
+
+****************IDEAS*********************
+
+- Tic-tac-toa game
+- menues with NEW GAME, DIFFICULTY, HIGH SCORES etc.
+- playing vs human or playing vs AI
+- rotating desc???
+- animations for X, O, winning, losing
+ 
+ 
+
+
+
+
+****************TODO***********************
