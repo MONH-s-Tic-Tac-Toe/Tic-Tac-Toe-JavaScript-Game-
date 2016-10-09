@@ -7,7 +7,9 @@ IDEAS AND TODOs:
 - playing vs human or playing vs AI
 - rotating desc???
 - animations for X, O, winning, losing
- 
+- евентуално ограничаване на времето за ход, което да бъде избирано в менюто
+- ако остане повече време е възможно да направим модификация с 9 игрални полета -https://www.quora.com/Whats-the-best-hack-edit-to-make-the-boring-Tic-Tac-Toe-game-more-interesting
+
  
 
 
