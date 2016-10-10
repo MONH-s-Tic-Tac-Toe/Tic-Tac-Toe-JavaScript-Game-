@@ -188,6 +188,167 @@ function Segment(x, y) {
     }
 }
 
+function AIPlayer(data) {
+
+    let data = data, seed, oppSeed;
+
+    this.setSeed = function(_seed) {
+        seed = _seed;
+        oppSeed = _seed === Segment.NOUGHT ? Segment.CROSS : Segment.NOUGHT;
+    };
+
+    this.getSeed = function() {
+        return seed;
+    };
+
+    this.move = function() {
+        return minimax(2, seed)[1];
+    };
+
+    function minimax(depth, player) {
+        let nextMoves = getValidMoves();
+
+        let best = (player === seed) ? -1e100 : 1e100,
+            current,
+            bestidx = -1;
+
+        if (nextMoves.length === 0 || depth === 0) {
+            best = evaluate();
+        } else {
+            for (let i = nextMoves.length;i--;) {
+                let m = nextMoves[i];
+                data[m].set(player);
+
+                if (player === seed) {
+                    current = minimax(depth-1, oppSeed)[0];
+                    if (current > best) {
+                        best = current;
+                        bestidx = m;
+                    }
+                } else {
+                    current = minimax(depth-1, seed)[0];
+                    if (current < best) {
+                        best = current;
+                        bestidx = m;
+                    }
+                }
+
+                data[m].set(Segment.BLANK);
+            }
+        }
+
+        return [best, bestidx];
+    }
+
+    function getValidMoves() {
+        let nm = [];
+        if (hasWon(seed) || hasWon(oppSeed)) {
+            return nm;
+        }
+        for (let i = data.length;i--;) {
+            if (!data[i].hasData()) {
+                nm.push(i);
+            }
+        }
+        return nm;
+    }
+
+    function evaluate() {
+        let s = 0;
+        s += evaluateLine(0, 1, 2);
+        s += evaluateLine(3, 4, 5);
+        s += evaluateLine(6, 7, 8);
+        s += evaluateLine(0, 3, 6);
+        s += evaluateLine(1, 4, 7);
+        s += evaluateLine(2, 5, 8);
+        s += evaluateLine(0, 4, 8);
+        s += evaluateLine(2, 4, 6);
+        return s;
+    }
+
+    function evaluateLine(idx1, idx2, idx3) {
+        let s = 0;
+
+        if (data[idx1].equals(seed)) {
+            s = 1;
+        } else if (data[idx1].equals(oppSeed)) {
+            s = -1;
+        }
+
+        if (data[idx2].equals(seed)) {
+            if (s === 1) {
+                s = 10;
+            } else if (s === -1) {
+                return 0;
+            } else {
+                s = 1;
+            }
+        } else if (data[idx2].equals(oppSeed)) {
+            if (s === -1) {
+                s = -10;
+            } else if (s === 1) {
+                return 0;
+            } else {
+                s = -1;
+            }
+        }
+
+        if (data[idx3].equals(seed)) {
+            if (s > 0) {
+                s *= 10;
+            } else if (s < 0) {
+                return 0;
+            } else {
+                s = 1;
+            }
+        } else if (data[idx3].equals(oppSeed)) {
+            if (s < 0) {
+                s *= 10;
+            } else if (s > 0) {
+                return 0;
+            } else {
+                s = -1;
+            }
+        }
+
+        return s;
+    }
+
+    let winingPatterns = (function() {
+        let wp = ["111000000", "000111000", "000000111",
+                "100100100", "010010010", "001001001",
+                "100010001", "001010100"],
+            r = new Array(wp.length);
+        for (let i = wp.length;i--;) {
+            r[i] = parseInt(wp[i], 2);
+        }
+        return r;
+    })();
+
+    let hasWon = this.hasWon = function(player) {
+        let p = 0;
+        for (let i = data.length;i--;) {
+            if (data[i].equals(player)) {
+                p |= (1 << i);
+            }
+        }
+        for (let i = winingPatterns.length;i--;) {
+            let wp = winingPatterns[i];
+            if ((p & wp) === wp) return true;
+        }
+        return false;
+    };
+
+    this.hasWinner = function() {
+        if (hasWon(seed)) {
+            return seed;
+        } if (hasWon(oppSeed)) {
+            return oppSeed;
+        }
+        return false;
+    }
+}
+
 // Creates the menu page
 function MenuButtonController(text,x,y,callback) {
     let hover, normal, rect = {};
