@@ -89,3 +89,105 @@ function StateController() {
         }
     }
 }
+
+function Segment(x, y) {
+
+    let x = x, y = y;
+
+    let segment = Segment.BLANK;
+    let anim = 0;
+
+    if (segment == null) {
+        (function () {
+                let _c = document.createElement("canvas");
+                _c.width = _c.height = 100;
+                let _ctx = _c.getContext("2d");
+
+                _ctx.fillStyle = "skyblue";
+                _ctx.lineWidth = 4;
+                _ctx.strokeStyle = "white";
+                _ctx.lineCap = "round";
+
+                // Blank
+                _ctx.fillRect(0, 0, 100, 100);
+                Segment.BLANK = new Image();
+                Segment.BLANK.src = _c.toDataURL();
+
+                // Nought
+                _ctx.fillRect(0, 0, 100, 100);
+
+                _ctx.beginPath();
+                _ctx.arc(50, 50, 30, 0, 2*Math.PI);
+                _ctx.stroke();
+
+                Segment.NOUGHT = new Image();
+                Segment.NOUGHT.src = _c.toDataURL();
+
+                // Cross
+                _ctx.fillRect(0, 0, 100, 100);
+
+                _ctx.beginPath();
+                _ctx.moveTo(20, 20);
+                _ctx.lineTo(80, 80);
+                _ctx.moveTo(80, 20);
+                _ctx.lineTo(20, 80);
+                _ctx.stroke();
+
+                Segment.CROSS = new Image();
+                Segment.CROSS.src = _c.toDataURL();
+            })();
+        segment = Segment.BLANK;
+    }
+
+    this.active = function () {
+        return anim > 0;
+    };
+
+    this.equals = function (_segment) {
+        return segment === _segment;
+    };
+
+    this.hasData = function () {
+        return segment !== Segment.BLANK;
+    };
+
+    this.set = function (next) {
+        segment = next;
+    };
+
+    this.flip = function (next) {
+        segment = next;
+        anim = 1;
+    };
+
+    this.update = function() {
+        if (anim > 0) {
+            anim -= 0.02;
+        }
+    };
+
+    this.draw = function (ctx) {
+        if (anim <= 0) {
+            ctx.drawImage(segment, x, y);
+            return;
+        }
+
+        let res = 2;
+        let t = anim > 0.5 ? Segment.BLANK : segment;
+        let p = -Math.abs(2*anim - 1) + 1;
+
+        p *= p;
+
+        for (let i = 0; i < 100; i += res) {
+
+            let j = 50 - (anim > 0.5 ? 100 - i : i);
+
+            ctx.drawImage(t, i, 0, res, 100,
+                    x + i - p*i + 50*p,
+                    y - j*p*0.2,
+                    res,
+                    100 + j*p*0.4
+            );
+        }
+    }
+}
