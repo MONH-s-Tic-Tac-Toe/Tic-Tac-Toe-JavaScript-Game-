@@ -8,24 +8,24 @@ function MenuState(name) {
 
     let y = 100;
 // Makes the fields in the menu page and uses the init function to initialize different pages
-    btns.push(new MenuButton("One Player", 20, y, function() {
+    btns.push(new MenuButton("One Player", 20, y, function () {
         state.get("game").init(ONE_PLAYER);
         state.change("game");
     }));
-    btns.push(new MenuButton("Two Players", 20, y+70, function() {
+    btns.push(new MenuButton("Two Players", 20, y + 70, function () {
         state.get("game").init(TWO_PLAYER);
         state.change("game");
     }));
-    btns.push(new MenuButton("About", 20, y+140, function() {
+    btns.push(new MenuButton("About", 20, y + 140, function () {
         state.change("about", true);
     }));
 
-    this.update = function() {
+    this.update = function () {
         frames++;
-        angle = 0.2*Math.cos(frames*0.02);
+        angle = 0.2 * Math.cos(frames * 0.02);
     };
 
-    this.render = function(_ctx) {
+    this.render = function (_ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.save();
@@ -34,10 +34,10 @@ function MenuState(name) {
         ctx.font = "40px Helvetica";
         ctx.fillStyle = "skyblue";
         let txt = "Tic Tac Toe";
-        ctx.fillText(txt, -ctx.measureText(txt).width/2, 18);
+        ctx.fillText(txt, -ctx.measureText(txt).width / 2, 18);
         ctx.restore();
 
-        for (let i = btns.length;i--;) {
+        for (let i = btns.length; i--;) {
             btns[i].draw(ctx);
         }
 
@@ -71,8 +71,8 @@ function GameState(name) {
         let py = mouse.y;
 
         if (px % 120 >= 20 && py % 120 >= 20) {
-            let idx = Math.floor(px/120);
-            idx += Math.floor(py/120)*3;
+            let idx = Math.floor(px / 120);
+            idx += Math.floor(py / 120) * 3;
 
             if (data[idx].hasData()) {
                 return;
@@ -92,8 +92,8 @@ function GameState(name) {
         data = [];
 
         for (let i = 0; i < 9; i++) {
-            let x = (i % 3)*120 + 20;
-            let y = Math.floor(i/3)*120 + 20;
+            let x = (i % 3) * 120 + 20;
+            let y = Math.floor(i / 3) * 120 + 20;
             data.push(new Segment(x, y));
         }
 
@@ -114,7 +114,7 @@ function GameState(name) {
         }
     };
 
-    this.update = function() {
+    this.update = function () {
         if (winnerMsg) return;
         let activeAnim = false;
         for (let i = data.length; i--;) {
@@ -166,17 +166,17 @@ function GameState(name) {
             h -= lw;
 
             ctx.save();
-            ctx.translate((canvas.width - w + lw)/2, (canvas.height - h + lw)/2);
+            ctx.translate((canvas.width - w + lw) / 2, (canvas.height - h + lw) / 2);
             ctx.fillStyle = "white";
             ctx.strokeStyle = "skyblue";
             ctx.lineWidth = lw;
             ctx.font = "20px Helvetica";
 
             ctx.beginPath();
-            ctx.arc(s, s, s, Math.PI, 1.5*Math.PI);
-            ctx.arc(w-s, s, s, 1.5*Math.PI, 0);
-            ctx.arc(w-s, h-s, s, 0, 0.5*Math.PI);
-            ctx.arc(s, h-s, s, 0.5*Math.PI, Math.PI);
+            ctx.arc(s, s, s, Math.PI, 1.5 * Math.PI);
+            ctx.arc(w - s, s, s, 1.5 * Math.PI, 0);
+            ctx.arc(w - s, h - s, s, 0, 0.5 * Math.PI);
+            ctx.arc(s, h - s, s, 0.5 * Math.PI, Math.PI);
             ctx.closePath();
 
             ctx.fill();
@@ -184,7 +184,7 @@ function GameState(name) {
 
             ctx.fillStyle = "skyblue";
             let txt = winnerMsg;
-            ctx.fillText(txt, w/2 - ctx.measureText(txt).width/2, 45);
+            ctx.fillText(txt, w / 2 - ctx.measureText(txt).width / 2, 45);
 
             ctx.restore();
         }
@@ -199,4 +199,76 @@ function GameState(name) {
 }
 
 function AboutState(name) {
+
+    this.name = name;
+    var scene = new Scene(canvas.width, canvas.height),
+        ctx = scene.getContext();
+
+    var text = "Here there will be some description of the game";
+    var hastick = false;
+
+    canvas.addEventListener("mousedown", function (evt) {
+        if (hastick && state.active_name === "about") {
+            state.change("menu");
+        }
+        hastick = false;
+    }, false);
+
+    (function () {
+
+        ctx.font = "20px Helvetica";
+        ctx.fillStyle = "skyblue";
+
+        ctx.translate(20, 20);
+
+        var s = 10,
+            w = 340,
+            h = 340,
+            pi = Math.PI;
+
+        ctx.beginPath();
+        ctx.arc(s, s, s, pi, 1.5 * pi);
+        ctx.arc(w - s, s, s, 1.5 * pi, 0);
+        ctx.arc(w - s, h - s, s, 0, 0.5 * pi);
+        ctx.arc(s, h - s, s, 0.5 * pi, pi);
+        ctx.fill();
+
+        ctx.fillStyle = "white";
+
+        var words = text.split(' '),
+            line = '',
+            x = 20,
+            y = 75,
+            maxWidth = 300,
+            lineHeight = 25;
+
+        for (var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = ctx.measureText(testLine);
+            var testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+                ctx.fillText(line, x, y);
+                line = words[n] + ' ';
+                y += lineHeight;
+            }
+            else {
+                line = testLine;
+            }
+        }
+        ctx.fillText(line, x, y);
+    })();
+
+
+    this.update = function () {
+        hastick = true;
+    }
+
+    this.render = function (_ctx) {
+
+        if (_ctx) {
+            scene.draw(_ctx);
+        } else {
+            return scene.getCanvas();
+        }
+    }
 }
