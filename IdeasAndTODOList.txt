@@ -7,9 +7,9 @@ IDEAS AND TODOs:
 - playing vs human or playing vs AI
 - rotating desc???
 - animations for X, O, winning, losing
- 
- 
-
+- Make levels
+- Loading bar
+- Pause the game
 
 
 
