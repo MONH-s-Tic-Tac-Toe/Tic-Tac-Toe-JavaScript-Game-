@@ -13,20 +13,20 @@ function StateManager() {
             var arg = arguments[i];
             state[arg.name] = arg;
         }
-    }
+    };
     this.set = function(name) {
         active = state[name];
         this.active_name = name;
-    }
+    };
     this.get = function(name) {
         return state[name];
-    }
+    };
     this.change = function(name, _right) {
         anim = 0;
         right = _right || false;
         next = name;
         this.active_name = name;
-    }
+    };
     this.tick = function(ctx) {
         if (next) {
             if (anim <= 1) {
@@ -196,15 +196,15 @@ function AIPlayer(data) {
     this.setSeed = function(_seed) {
         seed = _seed;
         oppSeed = _seed === Tile.NOUGHT ? Tile.CROSS : Tile.NOUGHT;
-    };
+    }
 
     this.getSeed = function() {
         return seed;
-    };
+    }
 
     this.move = function() {
         return minimax(2, seed)[1];
-    };
+    }
 
     function minimax(depth, player) {
         var nextMoves = getValidMoves();
@@ -338,7 +338,7 @@ function AIPlayer(data) {
             if ((p & wp) === wp) return true;
         }
         return false;
-    };
+    }
 
     this.hasWinner = function() {
         if (hasWon(seed)) {
@@ -350,8 +350,9 @@ function AIPlayer(data) {
     }
 }
 
-// Creates a line in the menu page
+
 function MenuButton(text, x, y, cb) {
+
 
     var text = text, x = x, y = y, callback = cb;
     var hover, normal, rect = {};
@@ -387,8 +388,7 @@ function MenuButton(text, x, y, cb) {
         _ctx.strokeStyle = "brown";
         _ctx.lineWidth = _lw;
         _ctx.font = "20px Helvetica";
-        
-// Creates the line by making it part by part
+
         _ctx.translate(_lw/2, _lw/2);
         _ctx.beginPath();
         _ctx.arc(s, s, s, Math.PI, 1.5*Math.PI);
@@ -399,7 +399,6 @@ function MenuButton(text, x, y, cb) {
         _ctx.fill();
         _ctx.stroke();
 
-    // Defines the style of the rows
         _ctx.fillStyle = _ctx.strokeStyle;
         var _txt = text;
         _ctx.fillText(_txt, (_w - _ctx.measureText(_txt).width)/2, 30);
@@ -422,7 +421,7 @@ function MenuButton(text, x, y, cb) {
             yl = this.y < y && y < this.y+this.height;
 
         return xl && yl;
-    };
+    }
 
     this.draw = function(ctx) {
         var tile = rect.hasPoint(mouse.x, mouse.y) && state.active_name==="menu"? hover : normal;
@@ -431,21 +430,24 @@ function MenuButton(text, x, y, cb) {
 
 }
 
-//Creates the field of the game
-function Scene(width,height) {
-    let canvas = document.createElement("canvas");
-    canvas.height = height;
-    canvas.width = width;
-    let ctx = canvas.getContext("2d");
+function Scene(width, height) {
 
-    this.getContext = function () {
+    var width = width, height = height;
+
+    var canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext("2d");
+
+    this.getContext = function() {
         return ctx;
-    };
-    this.getCanvas = function () {
+    }
+
+    this.getCanvas = function() {
         return canvas;
-    };
-    //draws the field
-    this.draw = function (ctx) {
-        ctx.drawImage(canvas, 0, 0);
-    };
+    }
+
+    this.draw = function(_ctx) {
+        _ctx.drawImage(canvas, 0, 0);
+    }
 }

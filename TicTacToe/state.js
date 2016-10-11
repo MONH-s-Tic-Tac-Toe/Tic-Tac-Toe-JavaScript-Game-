@@ -1,4 +1,3 @@
-// Makes the fields in the menu page and uses the init function to initialize different pages
 function MenuState(name) {
 
     this.name = name;
@@ -33,7 +32,7 @@ function MenuState(name) {
         ctx.rotate(angle);
         ctx.font = "40px Gigi";
         ctx.fillStyle = "brown";
-        var txt = "Team MONH";
+        var txt = "Team MONX";
         ctx.fillText(txt, -ctx.measureText(txt).width/2, 18);
         ctx.restore();
 
@@ -78,7 +77,7 @@ function GameState(name) {
                 return;
             }
             data[idx].flip(player);
-            if (mode && ONE_PLAYER) {
+            if (mode & ONE_PLAYER) {
                 isPlayer = false;
             } else {
                 player = player === Tile.NOUGHT ? Tile.CROSS : Tile.NOUGHT;
@@ -112,7 +111,7 @@ function GameState(name) {
             player = Tile.NOUGHT;
             isPlayer = true;
         }
-    };
+    }
 
     this.update = function() {
         if (winnerMsg) return;
@@ -150,7 +149,7 @@ function GameState(name) {
             aiMoved = false;
         }
         hastick = true;
-    };
+    }
 
     this.render = function(_ctx) {
 
@@ -260,7 +259,7 @@ function AboutState(name) {
 
     this.update = function() {
         hastick = true;
-    }
+    };
 
     this.render = function(_ctx) {
 
@@ -271,4 +270,3 @@ function AboutState(name) {
         }
     }
 }
-
