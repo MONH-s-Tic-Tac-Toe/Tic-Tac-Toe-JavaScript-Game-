@@ -1,6 +1,6 @@
 function StateManager() {
 
-    let state = {},
+    var state = {},
         next = null,
         active = null,
         anim = 0,
@@ -9,8 +9,8 @@ function StateManager() {
     this.active_name = null;
 
     this.add = function() {
-        for (let i = arguments.length; i--;) {
-            let arg = arguments[i];
+        for (var i = arguments.length; i--;) {
+            var arg = arguments[i];
             state[arg.name] = arg;
         }
     };
@@ -35,7 +35,7 @@ function StateManager() {
                 active.update();
                 state[next].update();
 
-                let c1 = active.render(),
+                var c1 = active.render(),
                     c2 = state[next].render(),
 
                     c1w = c1.width,
@@ -51,12 +51,12 @@ function StateManager() {
 
                 if (right) {
                     p = 1 - p;
-                    let t = c2;
+                    var t = c2;
                     c2 = c1;
                     c1 = t;
                 }
 
-                for (let i = 0; i < c1w; i += res) {
+                for (var i = 0; i < c1w; i += res) {
                     ctx.drawImage(c1, i, 0, res, c1h,
                         i - p*i,
                         (c1w - i)*p*0.2,
@@ -65,7 +65,7 @@ function StateManager() {
                     );
                 }
                 p = 1 - p;
-                for (let i = 0; i < c2w; i += res) {
+                for (var i = 0; i < c2w; i += res) {
                     ctx.drawImage(c2, i, 0, res, c2h,
                         i - (i - c2w)*p,
                         i*p*0.2,
@@ -91,14 +91,14 @@ function Tile(x, y) {
 
     var x = x, y = y;
 
-    let tile = Tile.BLANK;
-    let anim = 0;
+    var tile = Tile.BLANK;
+    var anim = 0;
 
     if (tile == null) {
         (function() {
-            let _c = document.createElement("canvas");
+            var _c = document.createElement("canvas");
             _c.width = _c.height = 100;
-            let _ctx = _c.getContext("2d");
+            var _ctx = _c.getContext("2d");
 
             _ctx.fillStyle = "beige";
             _ctx.lineWidth = 4;
@@ -169,15 +169,15 @@ function Tile(x, y) {
             return;
         }
 
-        let res = 2;
-        let t = anim > 0.5 ? Tile.BLANK : tile;
-        let p = -Math.abs(2*anim - 1) + 1;
+        var res = 2;
+        var t = anim > 0.5 ? Tile.BLANK : tile;
+        var p = -Math.abs(2*anim - 1) + 1;
 
         p *= p;
 
-        for (let i = 0; i < 100; i += res) {
+        for (var i = 0; i < 100; i += res) {
 
-            let j = 50 - (anim > 0.5 ? 100 - i : i);
+            var j = 50 - (anim > 0.5 ? 100 - i : i);
 
             ctx.drawImage(t, i, 0, res, 100,
                 x + i - p*i + 50*p,
@@ -196,28 +196,28 @@ function AIPlayer(data) {
     this.setSeed = function(_seed) {
         seed = _seed;
         oppSeed = _seed === Tile.NOUGHT ? Tile.CROSS : Tile.NOUGHT;
-    }
+    };
 
     this.getSeed = function() {
         return seed;
-    }
+    };
 
     this.move = function() {
         return minimax(2, seed)[1];
-    }
+    };
 
     function minimax(depth, player) {
-        let nextMoves = getValidMoves();
+        var nextMoves = getValidMoves();
 
-        let best = (player === seed) ? -1e100 : 1e100,
+        var best = (player === seed) ? -1e100 : 1e100,
             current,
             bestidx = -1;
 
         if (nextMoves.length === 0 || depth === 0) {
             best = evaluate();
         } else {
-            for (let i = nextMoves.length;i--;) {
-                let m = nextMoves[i];
+            for (var i = nextMoves.length;i--;) {
+                var m = nextMoves[i];
                 data[m].set(player);
 
                 if (player === seed) {
@@ -242,11 +242,11 @@ function AIPlayer(data) {
     }
 
     function getValidMoves() {
-        let nm = [];
+        var nm = [];
         if (hasWon(seed) || hasWon(oppSeed)) {
             return nm;
         }
-        for (let i = data.length;i--;) {
+        for (var i = data.length;i--;) {
             if (!data[i].hasData()) {
                 nm.push(i);
             }
@@ -255,7 +255,7 @@ function AIPlayer(data) {
     }
 
     function evaluate() {
-        let s = 0;
+        var s = 0;
         s += evaluateLine(0, 1, 2);
         s += evaluateLine(3, 4, 5);
         s += evaluateLine(6, 7, 8);
@@ -268,7 +268,7 @@ function AIPlayer(data) {
     }
 
     function evaluateLine(idx1, idx2, idx3) {
-        let s = 0;
+        var s = 0;
 
         if (data[idx1].equals(seed)) {
             s = 1;
@@ -315,30 +315,30 @@ function AIPlayer(data) {
         return s;
     }
 
-    let winnigPatterns = (function() {
-        let wp = ["111000000", "000111000", "000000111",
+    var winnigPatterns = (function() {
+        var wp = ["111000000", "000111000", "000000111",
                 "100100100", "010010010", "001001001",
                 "100010001", "001010100"],
             r = new Array(wp.length);
-        for (let i = wp.length;i--;) {
+        for (var i = wp.length;i--;) {
             r[i] = parseInt(wp[i], 2);
         }
         return r;
     })();
 
-    let hasWon = this.hasWon = function(player) {
-        let p = 0;
-        for (let i = data.length;i--;) {
+    var hasWon = this.hasWon = function(player) {
+        var p = 0;
+        for (var i = data.length;i--;) {
             if (data[i].equals(player)) {
                 p |= (1 << i);
             }
         }
-        for (let i = winnigPatterns.length;i--;) {
-            let wp = winnigPatterns[i];
+        for (var i = winnigPatterns.length;i--;) {
+            var wp = winnigPatterns[i];
             if ((p & wp) === wp) return true;
         }
         return false;
-    }
+    };
 
     this.hasWinner = function() {
         if (hasWon(seed)) {
@@ -352,10 +352,8 @@ function AIPlayer(data) {
 
 
 function MenuButton(text, x, y, cb) {
-
-
     var text = text, x = x, y = y, callback = cb;
-    let hover, normal, rect = {};
+    var hover, normal, rect = {};
 
     canvas.addEventListener("mousedown", function(evt) {
         if (state.active_name !== "menu") return;
@@ -368,7 +366,7 @@ function MenuButton(text, x, y, cb) {
     }, false);
 
     (function() {
-        let _c = document.createElement("canvas"),
+        var _c = document.createElement("canvas"),
             _w = _c.width = 340,
             _h = _c.height = 50,
             _lw = 2,
@@ -382,7 +380,7 @@ function MenuButton(text, x, y, cb) {
         _w -= _lw;
         _h -= _lw;
 
-        let _ctx = _c.getContext("2d");
+        var _ctx = _c.getContext("2d");
 
         _ctx.fillStyle = "beige";
         _ctx.strokeStyle = "brown";
@@ -400,7 +398,7 @@ function MenuButton(text, x, y, cb) {
         _ctx.stroke();
 
         _ctx.fillStyle = _ctx.strokeStyle;
-        let _txt = text;
+        var _txt = text;
         _ctx.fillText(_txt, (_w - _ctx.measureText(_txt).width)/2, 30);
 
         normal = new Image();
@@ -417,35 +415,34 @@ function MenuButton(text, x, y, cb) {
     })();
 
     rect.hasPoint = function(x, y) {
-        let xl = this.x < x && x < this.x+this.width,
+        var xl = this.x < x && x < this.x+this.width,
             yl = this.y < y && y < this.y+this.height;
 
         return xl && yl;
     }
 
     this.draw = function(ctx) {
-        let tile = rect.hasPoint(mouse.x, mouse.y) && state.active_name==="menu"? hover : normal;
+        var tile = rect.hasPoint(mouse.x, mouse.y) && state.active_name==="menu"? hover : normal;
         ctx.drawImage(tile, x, y);
     }
 
 }
 
 function Scene(width, height) {
-
     var width = width, height = height;
 
-    let canvas = document.createElement("canvas");
+    var canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    let ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext("2d");
 
     this.getContext = function() {
         return ctx;
-    }
+    };
 
     this.getCanvas = function() {
         return canvas;
-    }
+    };
 
     this.draw = function(_ctx) {
         _ctx.drawImage(canvas, 0, 0);
