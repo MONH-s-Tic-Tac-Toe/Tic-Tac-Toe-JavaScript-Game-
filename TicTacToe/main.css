@@ -11,7 +11,7 @@ canvas {
 }
 
 body {
-    font-family: "Trebuchet MS", sans-serif;
+    font-family: "Gigi", "Trebuchet MS", sans-serif;
 }
 
 #overlay {
@@ -36,7 +36,7 @@ body {
     margin-right: -190px;
     background: linear-gradient(45deg, rgba(245, 245, 220, 1) 0%, rgba(235, 235, 210, 1) 100%);
     transform: rotateY(0deg);
-    animation: flipOut 2s infinite linear;
+    animation: flipOut 3s infinite linear;
     text-align: center;
     padding-top: 120px;
     color: brown;
@@ -60,9 +60,12 @@ body {
     color: brown;
 }
 
-.text-block h2,
-.text-block p {
-    color: brown;
+.block h2 {
+    font-size: 45px;
+}
+
+.block p {
+    font-size: 25px;
 }
 
 @keyframes fadeOut {
