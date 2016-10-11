@@ -20,7 +20,7 @@
 </head>
 <body>
 <script>
-    var canvas, ctx, state, mouse = {x:0, y:0};
+    let canvas, ctx, state, mouse = {x:0, y:0};
     window.onload = function main() {
         canvas = document.createElement("canvas");
         canvas.width = canvas.height = 3*120 + 20;
@@ -42,8 +42,8 @@
         state.tick(ctx);
     }
     function mouseMove(evt) {
-        var el = evt.target;
-        var ox = oy = 0;
+        let el = evt.target;
+        let ox = oy = 0;
         do {
             ox += el.offsetLeft;
             oy += el.offsetTop;
