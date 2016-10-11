@@ -1,0 +1,111 @@
+canvas {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    opacity: 1;
+    animation: appear 4s;
+}
+
+body {
+    font-family: "Trebuchet MS", sans-serif;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    opacity: 0;
+    animation: fadeOut 4s;
+    pointer-events: none;
+}
+
+.block {
+    width: 380px;
+    height: 380px;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    margin-top: -190px;
+    margin-right: -190px;
+    background: linear-gradient(45deg, rgba(245, 245, 220, 1) 0%, rgba(235, 235, 210, 1) 100%);
+    transform: rotateY(0deg);
+    animation: flipOut 2s infinite linear;
+    text-align: center;
+    padding-top: 120px;
+    color: brown;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+}
+
+.text-block {
+    width: 380px;
+    height: 380px;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    margin-top: -190px;
+    margin-right: -190px;
+    z-index: 500;
+    text-align: center;
+    padding-top: 120px;
+    color: brown;
+}
+
+.text-block h2,
+.text-block p {
+    color: brown;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    90% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+@keyframes flipOut {
+    0% {
+        transform: rotateY(0deg);
+    }
+
+    50% {
+        transform: rotateY(180deg);
+    }
+
+    100% {
+        transform: rotateY(0deg);
+    }
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+
+    90% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

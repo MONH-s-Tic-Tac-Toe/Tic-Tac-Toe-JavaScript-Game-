@@ -7,21 +7,14 @@
     <script src="game.js"></script>
     <script src="state.js"></script>
 
-    <style>
-        canvas {
-            position: absolute;
-            margin: auto;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="main.css" type="text/css">
+
 </head>
 <body>
 
 <script>
     var canvas, ctx, state, mouse = {x:0, y:0};
+    var overlay = document.getElementById("overlay");
     window.onload = function main() {
         canvas = document.createElement("canvas");
         canvas.width = canvas.height = 3*120 + 20;
@@ -53,5 +46,16 @@
         mouse.y = evt.clientY - oy;
     }
 </script>
+
+<div id="overlay">
+    <div class="text-block">
+
+    </div>
+    <div class="block">
+        <h2>Tic Tac Toe</h2>
+        <p>by Team MONX</p>
+    </div>
+</div>
+
 </body>
 </html>
