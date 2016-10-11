@@ -1,12 +1,12 @@
 function MenuState(name) {
 
     this.name = name;
-    let scene = new Scene(canvas.width, canvas.height),
+    var scene = new Scene(canvas.width, canvas.height),
         ctx = scene.getContext();
 
-    let btns = [], angle = 0, frames = 0;
+    var btns = [], angle = 0, frames = 0;
 
-    let _yPos = 100;
+    var _yPos = 100;
     btns.push(new MenuButton("Single Player", 20, _yPos, function() {
         state.get("game").init(ONE_PLAYER);
         state.change("game");
@@ -22,7 +22,7 @@ function MenuState(name) {
     this.update = function() {
         frames++;
         angle = 0.2*Math.cos(frames*0.02);
-    }
+    };
 
     this.render = function(_ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -36,7 +36,7 @@ function MenuState(name) {
         ctx.fillText(txt, -ctx.measureText(txt).width/2, 18);
         ctx.restore();
 
-        for (let i = btns.length;i--;) {
+        for (var i = btns.length;i--;) {
             btns[i].draw(ctx);
         }
 
@@ -48,29 +48,38 @@ function MenuState(name) {
     }
 }
 
-let ONE_PLAYER = 1,
+var ONE_PLAYER = 1,
     TWO_PLAYER = 2;
 
 function GameState(name) {
 
     this.name = name;
-    let scene = new Scene(canvas.width, canvas.height),
+    var scene = new Scene(canvas.width, canvas.height),
         ctx = scene.getContext();
 
-    let data, player, ai, isPlayer, aiMoved, mode, winner, winnerMsg, hastick;
+    var data, player, ai, isPlayer, aiMoved, mode, winner, winnerMsg, hastick;
+
+    // If the player press 'p' it pauses the game.
+    let paused = false;
+    document.onkeydown = function (event) {
+        if(event.keyCode === 80){
+            paused = !paused;
+            winnerMsg = null;
+        }
+    };
 
     canvas.addEventListener("mousedown", function(evt) {
-        if (winnerMsg && state.active_name === "game") {
+        if (winnerMsg && state.active_name === "game" & winnerMsg != `Paused. Press 'p' to resume.`) {
             state.change("menu", true);
             return;
         }
         if (!isPlayer || winner || state.active_name !== "game" || !hastick) return;
 
-        let px = mouse.x;
-        let py = mouse.y;
+        var px = mouse.x;
+        var py = mouse.y;
 
         if (px % 120 >= 20 && py % 120 >= 20) {
-            let idx = Math.floor(px/120);
+            var idx = Math.floor(px/120);
             idx += Math.floor(py/120)*3;
 
             if (data[idx].hasData()) {
@@ -90,9 +99,9 @@ function GameState(name) {
         mode = _mode || ONE_PLAYER;
         data = [];
 
-        for (let i = 0; i < 9; i++) {
-            let x = (i % 3)*120 + 20;
-            let y = Math.floor(i/3)*120 + 20;
+        for (var i = 0; i < 9; i++) {
+            var x = (i % 3)*120 + 20;
+            var y = Math.floor(i/3)*120 + 20;
             data.push(new Tile(x, y));
         }
 
@@ -114,15 +123,19 @@ function GameState(name) {
     }
 
     this.update = function() {
+        if(paused){
+            winnerMsg = `Paused. Press 'p' to resume.`;
+            return;
+        }
         if (winnerMsg) return;
-        let activeAnim = false;
-        for (let i = data.length; i--;) {
+        var activeAnim = false;
+        for (var i = data.length; i--;) {
             data[i].update();
             activeAnim = activeAnim || data[i].active();
         }
         if (!activeAnim) {
             if (!aiMoved && !isPlayer) {
-                let m = ai.move();
+                var m = ai.move();
                 if (m === -1) {
                     winner = true;
                 } else {
@@ -155,11 +168,11 @@ function GameState(name) {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = data.length; i--;) {
+        for (var i = data.length; i--;) {
             data[i].draw(ctx);
         }
         if (winnerMsg) {
-            let s = 10, lw = 2, w = 300, h = 80;
+            var s = 10, lw = 2, w = 300, h = 80;
 
             w -= lw;
             h -= lw;
@@ -182,7 +195,7 @@ function GameState(name) {
             ctx.stroke();
 
             ctx.fillStyle = "brown";
-            let txt = winnerMsg;
+            var txt = winnerMsg;
             ctx.fillText(txt, w/2 -ctx.measureText(txt).width/2, 45);
 
             ctx.restore();
@@ -199,11 +212,11 @@ function GameState(name) {
 function AboutState(name) {
 
     this.name = name;
-    let scene = new Scene(canvas.width, canvas.height),
+    var scene = new Scene(canvas.width, canvas.height),
         ctx = scene.getContext();
 
-    let text = "Tic-tac-toe (or Noughts and crosses, Xs and Os) is a game for two players, X and O, who take turns marking the spaces in a 3×3 grid. The player who succeeds in placing three respective marks in a horizontal, vertical, or diagonal row wins the game.";
-    let hastick = false;
+    var text = "Tic-tac-toe is a game for two players, X and O, who take turns marking the spaces in a 3×3 grid. The player who succeeds in placing three respective marks in a horizontal, vertical, or diagonal row wins the game. If you want to pause it press 'p'";
+    var hastick = false;
 
     canvas.addEventListener("mousedown", function(evt) {
         if (hastick && state.active_name === "about") {
@@ -219,7 +232,7 @@ function AboutState(name) {
 
         ctx.translate(20, 20);
 
-        let s = 10,
+        var s = 10,
             w = 340,
             h = 340,
             pi = Math.PI;
@@ -233,17 +246,17 @@ function AboutState(name) {
 
         ctx.fillStyle = "brown";
 
-        let words = text.split(' '),
+        var words = text.split(' '),
             line = '',
             x = 20,
             y = 75,
             maxWidth = 300,
             lineHeight = 25;
 
-        for(let n = 0; n < words.length; n++) {
-            let testLine = line + words[n] + ' ';
-            let metrics = ctx.measureText(testLine);
-            let testWidth = metrics.width;
+        for(var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = ctx.measureText(testLine);
+            var testWidth = metrics.width;
             if (testWidth > maxWidth && n > 0) {
                 ctx.fillText(line, x, y);
                 line = words[n] + ' ';
