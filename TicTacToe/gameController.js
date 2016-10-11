@@ -89,6 +89,7 @@ function StateController() {
     }
 }
 
+//Draws and animates different segments: blank, nought, cross
 function Segment(x, y) {
     let segment = Segment.BLANK;
     let anim = 0;
@@ -447,3 +448,4 @@ function Scene(width,height) {
         ctx.drawImage(canvas, 0, 0);
     };
 }
+
