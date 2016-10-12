@@ -7,24 +7,37 @@ function MenuState(name) {
     var btns = [], angle = 0, frames = 0;
 
     var _yPos = 100;
-    btns.push(new MenuButton("Single Player", 20, _yPos, function() {
+    btns.push(new MenuButton("EASY", 20, _yPos, function () {
         state.get("game").init(ONE_PLAYER);
         state.change("game");
+        DIFFICULTY = 'easy';
     }));
-    btns.push(new MenuButton("Two Players", 20, _yPos+70, function() {
+    btns.push(new MenuButton("Normal", 20, _yPos + 60, function () {
+        state.get("game").init(ONE_PLAYER);
+        state.change("game");
+        DIFFICULTY = 'normal';
+    }));
+    btns.push(new MenuButton("Hard", 20, _yPos + 120, function () {
+        state.get("game").init(ONE_PLAYER);
+        state.change("game");
+        DIFFICULTY = 'hard';
+    }));
+    btns.push(new MenuButton("Two Player Game", 20, _yPos + 180, function () {
         state.get("game").init(TWO_PLAYER);
         state.change("game");
     }));
-    btns.push(new MenuButton("About", 20, _yPos+140, function() {
+
+    btns.push(new MenuButton("About", 20, _yPos + 240, function () {
         state.change("about", true);
     }));
 
-    this.update = function() {
+
+    this.update = function () {
         frames++;
-        angle = 0.2*Math.cos(frames*0.02);
+        angle = 0.2 * Math.cos(frames * 0.02);
     };
 
-    this.render = function(_ctx) {
+    this.render = function (_ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.save();
@@ -33,10 +46,10 @@ function MenuState(name) {
         ctx.font = "40px Gigi";
         ctx.fillStyle = "brown";
         let txt = "Team MONX";
-        ctx.fillText(txt, -ctx.measureText(txt).width/2, 18);
+        ctx.fillText(txt, -ctx.measureText(txt).width / 2, 18);
         ctx.restore();
 
-        for (var i = btns.length;i--;) {
+        for (var i = btns.length; i--;) {
             btns[i].draw(ctx);
         }
 
@@ -49,7 +62,8 @@ function MenuState(name) {
 }
 
 var ONE_PLAYER = 1,
-    TWO_PLAYER = 2;
+    TWO_PLAYER = 2,
+    DIFFICULTY;
 
 function GameState(name) {
 
@@ -62,13 +76,13 @@ function GameState(name) {
     // If the player press 'p' it pauses the game.
     let paused = false;
     document.onkeydown = function (event) {
-        if(event.keyCode === 80){
+        if (event.keyCode === 80) {
             paused = !paused;
             winnerMsg = null;
         }
     };
 
-    canvas.addEventListener("mousedown", function(evt) {
+    canvas.addEventListener("mousedown", function (evt) {
         if (winnerMsg && state.active_name === "game" & winnerMsg != `Paused. Press 'p' to resume.`) {
             state.change("menu", true);
             return;
@@ -79,8 +93,8 @@ function GameState(name) {
         var py = mouse.y;
 
         if (px % 120 >= 20 && py % 120 >= 20) {
-            var idx = Math.floor(px/120);
-            idx += Math.floor(py/120)*3;
+            var idx = Math.floor(px / 120);
+            idx += Math.floor(py / 120) * 3;
 
             if (data[idx].hasData()) {
                 return;
@@ -94,14 +108,14 @@ function GameState(name) {
         }
     }, false);
 
-    this.init = function(_mode, tile) {
+    this.init = function (_mode, tile) {
 
         mode = _mode || ONE_PLAYER;
         data = [];
 
         for (var i = 0; i < 9; i++) {
-            var x = (i % 3)*120 + 20;
-            var y = Math.floor(i/3)*120 + 20;
+            var x = (i % 3) * 120 + 20;
+            var y = Math.floor(i / 3) * 120 + 20;
             data.push(new Tile(x, y));
         }
 
@@ -113,7 +127,7 @@ function GameState(name) {
         winnerMsg = false;
         hastick = false;
 
-        ai = new AIPlayer(data);
+        ai = new AIPlayer(data, DIFFICULTY);
         ai.setSeed(player === Tile.NOUGHT ? Tile.CROSS : Tile.NOUGHT);
 
         if (mode & TWO_PLAYER) {
@@ -122,8 +136,8 @@ function GameState(name) {
         }
     }
 
-    this.update = function() {
-        if(paused){
+    this.update = function () {
+        if (paused) {
             winnerMsg = `Paused. Press 'p' to resume.`;
             return;
         }
@@ -136,7 +150,7 @@ function GameState(name) {
         if (!activeAnim) {
             if (!aiMoved && !isPlayer) {
                 var m = ai.move();
-                if (m === -1) {
+                if (m === -1 || m === undefined) {
                     winner = true;
                 } else {
                     data[m].flip(ai.getSeed());
@@ -145,11 +159,12 @@ function GameState(name) {
             }
 
             if (winner && !aiMoved) {
-                if (winner === true) {
+                winner = ai.hasWinner();
+                if (winner === false) {
                     winnerMsg = "The game was a draw!";
                 } else if (winner === Tile.NOUGHT) {
                     winnerMsg = "The Nought player won!";
-                } else {
+                } else { // Cross won
                     winnerMsg = "The Cross player won!";
                 }
             }
@@ -164,7 +179,7 @@ function GameState(name) {
         hastick = true;
     }
 
-    this.render = function(_ctx) {
+    this.render = function (_ctx) {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -178,17 +193,17 @@ function GameState(name) {
             h -= lw;
 
             ctx.save();
-            ctx.translate((canvas.width - w + lw)/2, (canvas.height - h + lw)/2);
+            ctx.translate((canvas.width - w + lw) / 2, (canvas.height - h + lw) / 2);
             ctx.fillStyle = "beige";
             ctx.strokeStyle = "brown";
             ctx.lineWidth = lw;
             ctx.font = "20px Helvetica";
 
             ctx.beginPath();
-            ctx.arc(s, s, s, Math.PI, 1.5*Math.PI);
-            ctx.arc(w-s, s, s, 1.5*Math.PI, 0);
-            ctx.arc(w-s, h-s, s, 0, 0.5*Math.PI);
-            ctx.arc(s, h-s, s, 0.5*Math.PI, Math.PI);
+            ctx.arc(s, s, s, Math.PI, 1.5 * Math.PI);
+            ctx.arc(w - s, s, s, 1.5 * Math.PI, 0);
+            ctx.arc(w - s, h - s, s, 0, 0.5 * Math.PI);
+            ctx.arc(s, h - s, s, 0.5 * Math.PI, Math.PI);
             ctx.closePath();
 
             ctx.fill();
@@ -196,7 +211,7 @@ function GameState(name) {
 
             ctx.fillStyle = "brown";
             var txt = winnerMsg;
-            ctx.fillText(txt, w/2 -ctx.measureText(txt).width/2, 45);
+            ctx.fillText(txt, w / 2 - ctx.measureText(txt).width / 2, 45);
 
             ctx.restore();
         }
@@ -218,14 +233,14 @@ function AboutState(name) {
     var text = "Tic-tac-toe is a game for two players, X and O, who take turns marking the spaces in a 3×3 grid. The player who succeeds in placing three respective marks in a horizontal, vertical, or diagonal row wins the game. If you want to pause it press 'p'";
     var hastick = false;
 
-    canvas.addEventListener("mousedown", function(evt) {
+    canvas.addEventListener("mousedown", function (evt) {
         if (hastick && state.active_name === "about") {
             state.change("menu");
         }
         hastick = false;
     }, false);
 
-    (function() {
+    (function () {
 
         ctx.font = "20px Helvetica";
         ctx.fillStyle = "beige";
@@ -238,10 +253,10 @@ function AboutState(name) {
             pi = Math.PI;
 
         ctx.beginPath();
-        ctx.arc(s, s, s, pi, 1.5*pi);
-        ctx.arc(w-s, s, s, 1.5*pi, 0);
-        ctx.arc(w-s, h-s, s, 0, 0.5*pi);
-        ctx.arc(s, h-s, s, 0.5*pi, pi);
+        ctx.arc(s, s, s, pi, 1.5 * pi);
+        ctx.arc(w - s, s, s, 1.5 * pi, 0);
+        ctx.arc(w - s, h - s, s, 0, 0.5 * pi);
+        ctx.arc(s, h - s, s, 0.5 * pi, pi);
         ctx.fill();
 
         ctx.fillStyle = "brown";
@@ -253,7 +268,7 @@ function AboutState(name) {
             maxWidth = 300,
             lineHeight = 25;
 
-        for(var n = 0; n < words.length; n++) {
+        for (var n = 0; n < words.length; n++) {
             var testLine = line + words[n] + ' ';
             var metrics = ctx.measureText(testLine);
             var testWidth = metrics.width;
@@ -270,11 +285,11 @@ function AboutState(name) {
     })();
 
 
-    this.update = function() {
+    this.update = function () {
         hastick = true;
     };
 
-    this.render = function(_ctx) {
+    this.render = function (_ctx) {
 
         if (_ctx) {
             scene.draw(_ctx);
