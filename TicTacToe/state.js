@@ -7,15 +7,10 @@ function MenuState(name) {
     var btns = [], angle = 0, frames = 0;
 
     var _yPos = 100;
-    // btns.push(new MenuButton("Single Player", 20, _yPos, function() {
-    //     state.get("game").init(ONE_PLAYER);
-    //     state.change("game");
-    // }));
     btns.push(new MenuButton("Single Player", 20, _yPos, function() {
-        //state.get("game").init(ONE_PLAYER);
-        state.change("level", true);
+        state.get("game").init(ONE_PLAYER);
+        state.change("game");
     }));
-
     btns.push(new MenuButton("Two Players", 20, _yPos+70, function() {
         state.get("game").init(TWO_PLAYER);
         state.change("game");
@@ -280,60 +275,6 @@ function AboutState(name) {
     };
 
     this.render = function(_ctx) {
-
-        if (_ctx) {
-            scene.draw(_ctx);
-        } else {
-            return scene.getCanvas();
-        }
-    }
-}
-
-function LevelState(name) {
-
-    this.name = name;
-    var scene = new Scene(canvas.width, canvas.height),
-        ctx = scene.getContext();
-
-    var btns = [], angle = 0, frames = 0;
-
-    var _yPos = 100;
-
-    btns.push(new MenuButton("Easy", 20, _yPos, function() {
-        state.get("game").init(ONE_PLAYER);
-        state.change("game");
-    }));
-
-    btns.push(new MenuButton("Normal", 20, _yPos+70, function() {
-        state.get("game").init(ONE_PLAYER);
-        state.change("game");
-    }));
-
-    btns.push(new MenuButton("Hard", 20, _yPos+140, function() {
-        state.get("game").init(ONE_PLAYER);
-        state.change("game");
-    }));
-
-    this.update = function() {
-        frames++;
-        angle = 0.2*Math.cos(frames*0.02);
-    };
-
-    this.render = function(_ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.save();
-        ctx.translate(190, 40);
-        ctx.rotate(angle);
-        ctx.font = "40px Gigi";
-        ctx.fillStyle = "brown";
-        let txt = "Team MONX";
-        ctx.fillText(txt, -ctx.measureText(txt).width/2, 18);
-        ctx.restore();
-
-        for (var i = btns.length;i--;) {
-            btns[i].draw(ctx);
-        }
 
         if (_ctx) {
             scene.draw(_ctx);

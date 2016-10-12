@@ -20,7 +20,7 @@
         canvas.width = canvas.height = 3*120 + 20;
         ctx = canvas.getContext("2d");
         state = new StateManager();
-        state.add(new MenuState("menu"), new GameState("game"), new AboutState("about"), new LevelState("level"));
+        state.add(new MenuState("menu"), new GameState("game"), new AboutState("about"));
         state.set("menu");
         document.body.appendChild(canvas);
         canvas.addEventListener("mousemove", mouseMove, false);
