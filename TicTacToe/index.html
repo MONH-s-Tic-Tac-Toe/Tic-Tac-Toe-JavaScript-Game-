@@ -17,7 +17,7 @@
     var overlay = document.getElementById("overlay");
     window.onload = function main() {
         canvas = document.createElement("canvas");
-        canvas.width = canvas.height = 3*120 + 20;
+        canvas.width = canvas.height = 3*120 + 30;
         ctx = canvas.getContext("2d");
         state = new StateManager();
         state.add(new MenuState("menu"), new GameState("game"), new AboutState("about"));
