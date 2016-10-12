@@ -7,7 +7,7 @@ function MenuState(name) {
     let btns = [], angle = 0, frames = 0;
 
     let _yPos = 100;
-    btns.push(new MenuButton("EASY", 20, _yPos, function () {
+    btns.push(new MenuButton("Easy", 20, _yPos, function () {
         state.get("game").init(ONE_PLAYER);
         state.change("game");
         DIFFICULTY = 'easy';
