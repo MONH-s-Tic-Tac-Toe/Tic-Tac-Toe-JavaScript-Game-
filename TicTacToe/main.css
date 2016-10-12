@@ -46,20 +46,6 @@ body {
 
 }
 
-.text-block {
-    width: 380px;
-    height: 380px;
-    position: absolute;
-    top: 50%;
-    right: 50%;
-    margin-top: -190px;
-    margin-right: -190px;
-    z-index: 500;
-    text-align: center;
-    padding-top: 120px;
-    color: brown;
-}
-
 .block h2 {
     font-size: 40px;
 }
