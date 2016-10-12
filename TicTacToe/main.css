@@ -22,8 +22,8 @@ body {
     right: 0;
     z-index: 200;
     opacity: 0;
+    transform: scale(0);
     animation: fadeOut 4s;
-    pointer-events: none;
 }
 
 .block {
@@ -58,13 +58,11 @@ body {
     0% {
         opacity: 1;
         transform: scale(1);
-        pointer-events: all;
     }
 
     90% {
         opacity: 1;
         transform: scale(1);
-        pointer-events: all;
     }
 
     100% {
