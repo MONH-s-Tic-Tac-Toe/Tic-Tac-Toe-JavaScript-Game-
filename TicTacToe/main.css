@@ -11,7 +11,7 @@ canvas {
 }
 
 body {
-    font-family: "Gigi", "Trebuchet MS", sans-serif;
+    font-family: "Helvetica", sans-serif;
 }
 
 #overlay {
@@ -61,11 +61,11 @@ body {
 }
 
 .block h2 {
-    font-size: 45px;
+    font-size: 40px;
 }
 
 .block p {
-    font-size: 25px;
+    font-size: 20px;
 }
 
 @keyframes fadeOut {
