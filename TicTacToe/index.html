@@ -31,6 +31,7 @@
         state.get("game").init(ONE_PLAYER);
     }
     function tick() {
+        console.log(1);
         window.requestAnimationFrame(tick);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         state.tick(ctx);

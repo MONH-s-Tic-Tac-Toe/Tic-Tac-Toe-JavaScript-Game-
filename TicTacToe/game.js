@@ -97,7 +97,7 @@ function Tile(x, y) {
             let _c = document.createElement("canvas");
             _c.width = _c.height = 100;
             let _ctx = _c.getContext("2d");
-
+// Tile style
             _ctx.fillStyle = "beige";
             _ctx.lineWidth = 4;
             _ctx.strokeStyle = "brown";
@@ -186,7 +186,7 @@ function Tile(x, y) {
         }
     }
 }
-
+// game logic
 function AIPlayer(data) {
 
     let seed, oppSeed;
@@ -275,7 +275,7 @@ function AIPlayer(data) {
 
         return [best, bestidx, nextMoves];
     }
-
+// gets a list of available tiles
     function getValidMoves() {
         let nm = [];
         if (hasWon(seed) || hasWon(oppSeed)) {
@@ -288,7 +288,7 @@ function AIPlayer(data) {
         }
         return nm;
     }
-
+// returns tile score
     function evaluate() {
         let s = 0;
         s += evaluateLine(0, 1, 2);
@@ -302,6 +302,7 @@ function AIPlayer(data) {
         return s;
     }
 
+    // evaluates the line
     function evaluateLine(idx1, idx2, idx3) {
         let s = 0;
 
@@ -390,7 +391,7 @@ function AIPlayer(data) {
 function MenuButton(text, x, y, cb) {
     let  callback = cb;
     let hover, normal, rect = {};
-
+// When you press the mose it sends you to the chosen scene
     canvas.addEventListener("mousedown", function (evt) {
         if (state.active_name !== "menu") return;
 
@@ -401,6 +402,7 @@ function MenuButton(text, x, y, cb) {
         }
     }, false);
 
+//Style of the buttons
     (function () {
         let _c = document.createElement("canvas"),
             _w = _c.width = 340,
@@ -415,7 +417,6 @@ function MenuButton(text, x, y, cb) {
 
         _w -= _lw;
         _h -= _lw;
-
         let _ctx = _c.getContext("2d");
 
         _ctx.fillStyle = "beige";
@@ -463,7 +464,7 @@ function MenuButton(text, x, y, cb) {
     }
 
 }
-
+// Draws the playground
 function Scene(width, height) {
     let canvas = document.createElement("canvas");
     canvas.width = width;
